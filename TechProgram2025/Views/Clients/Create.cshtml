@@ -1,0 +1,38 @@
+﻿@model TechProgram2025.Models.Client
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Client</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientName, new { @class = "control-label" })
+                @Html.TextBoxFor(model => model.ClientName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.EntityType, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.EntityType, Html.GetEnumSelectList(typeof(LegalEntityType)), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.EntityType, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

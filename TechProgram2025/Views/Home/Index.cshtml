@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <ul>
+            <li>
+                @Html.ActionLink("Контракты", "Index", "Contracts")
+            </li>
+            <li>
+                @Html.ActionLink("Клиенты", "Index", "Clients")
+            </li>
+            <li>
+                @Html.ActionLink("Страховые планы", "Index", "Insurances")
+            </li>
+            <li>
+                @Html.ActionLink("Страховые агенты", "Index", "Users")
+            </li>
+        </ul>
+    </div>
+</div>
