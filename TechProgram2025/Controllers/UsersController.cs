@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using TechProgram2025.Models;
+using TechProgram2025.Utils;
 
 namespace TechProgram2025.Controllers
 {
 	[Authorize]
+	[CustomAuthorize(Roles.Admin)]
 	public class UsersController : Controller
 	{
 		AppDbContext db;

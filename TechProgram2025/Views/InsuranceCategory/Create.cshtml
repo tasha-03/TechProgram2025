@@ -1,12 +1,13 @@
-﻿@model TechProgram2025.Models.InsuranceVariant
+﻿@model TechProgram2025.Models.InsuranceCategory
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Create</h1>
 
-<h4>InsuranceVariant</h4>
+<h4>InsuranceCategory</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -19,18 +20,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea style="resize:both" asp-for="Description" class="form-control" ></textarea>
+				<textarea style="resize:both" asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-            @Html.LabelFor(model => model.CategoryID, new { @class = "control-label" })
-            @Html.DropDownListFor(model => model.CategoryID, ViewBag.Categories as SelectList, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.CategoryID, "", new { @class = "text-danger" })
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" name="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
+                <label asp-for="ParentCategoryID" class="control-label"></label>
+                <select asp-for="ParentCategoryID" class ="form-control" asp-items="ViewBag.ParentCategoryID">
+                    <option></option>
+                </select>
+                <span asp-validation-for="ParentCategoryID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -43,6 +41,3 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

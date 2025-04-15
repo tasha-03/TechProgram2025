@@ -20,6 +20,8 @@ namespace TechProgram2025.Controllers
 		// GET: InsuranceController
 		public async Task<ActionResult> Index()
 		{
+			List<InsuranceCategory> categories = await db.InsuranceCategories.ToListAsync();
+			ViewBag.Categories = categories;
 			return View(await db.InsuranceVariants.Include(variant => variant.Category).ToListAsync());
 		}
 
