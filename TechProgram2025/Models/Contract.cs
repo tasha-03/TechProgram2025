@@ -19,5 +19,8 @@ namespace TechProgram2025.Models
 		[Display(Name = "Страховой агент")]
 		public int AgentUserID { get; set; }
 		public User Agent { get; set; }
+
+		[Display(Name = "Статус")]
+		public ContractStatus Status { get; set; }
 	}
 }

@@ -116,47 +116,58 @@ namespace TechProgram2025.Controllers
                 return NotFound();
             }
 
-            var contract = await db.Contracts.FindAsync(id);
+            var contract = await db.Contracts
+                .Include(c => c.Client)
+                .Include(c => c.InsuranceVariants)
+            .FirstOrDefaultAsync(c => c.ContractID == id);
             if (contract == null)
             {
                 return NotFound();
             }
             ViewData["ClientID"] = new SelectList(db.Clients, "ClientID", "ClientID", contract.ClientID);
-            return View(contract);
+			ViewBag.Insurances = await db.InsuranceVariants.ToListAsync();
+			return View(contract);
         }
 
         // POST: Contracts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(int id, Contract contract)
-        {
-            if (id != contract.ContractID)
+        public async Task<ActionResult> Edit(int id, Contract contractInput, int[] variantIds)
+		{
+			ViewBag.Insurances = await db.InsuranceVariants.ToListAsync();
+			try
             {
-                return NotFound();
-            }
+                Contract? contract = await db.Contracts.FirstOrDefaultAsync(c => c.ContractID == id);
+                if (contract != null)
+                {
+                    contract.ClientID = contractInput.ClientID;
+					Client client = await db.Clients.SingleAsync(c => c.ClientID == contract.ClientID);
+					contract.Client = client;
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    db.Update(contract);
-                    await db.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ContractExists(contract.ContractID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    string sql = @"DELETE FROM [dbo].[ContractInsuranceVariant] WHERE ContractsContractID = @p0";
+                    await db.Database.ExecuteSqlRawAsync(sql, id);
+
+                    contract.InsuranceVariants = new List<InsuranceVariant>();
+
+					foreach (int varId in variantIds)
+					{
+						InsuranceVariant variant = await db.InsuranceVariants.SingleAsync(c => c.InsuranceVariantID == varId);
+						contract.InsuranceVariants.Add(variant);
+					}
+
+					contract.IsProblematic = contractInput.IsProblematic;
+                    contract.Status = contractInput.Status;
+
+					await db.SaveChangesAsync();
+				    return RedirectToAction(nameof(Index));
+				}
+				return NotFound();
+			}
+            catch (Exception exc)
+			{
+				ViewData["ClientID"] = new SelectList(db.Clients, "ClientID", "ClientName");
+				return View();
             }
-            ViewData["ClientID"] = new SelectList(db.Clients, "ClientID", "ClientID", contract.ClientID);
-            return View(contract);
         }
 
         // GET: Contracts/Delete/5
@@ -183,7 +194,9 @@ namespace TechProgram2025.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id)
         {
-            var contract = await db.Contracts.FindAsync(id);
+            var contract = await db.Contracts
+				.Include(c => c.Client).Include(c => c.InsuranceVariants)
+				.FirstOrDefaultAsync(m => m.ContractID == id); ;
             if (contract != null)
             {
                 db.Contracts.Remove(contract);

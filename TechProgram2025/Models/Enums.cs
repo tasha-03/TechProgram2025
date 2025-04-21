@@ -17,4 +17,14 @@ namespace TechProgram2025.Models
 		[Display(Name = "Агент")]
 		Agent = 1
 	}
+
+	public enum ContractStatus
+	{
+		[Display(Name = "Новый")]
+		New = 0,
+		[Display(Name = "Действующий")]
+		Active = 1,
+		[Display(Name = "Неактивный")]
+		Inactive = 2
+	}
 }

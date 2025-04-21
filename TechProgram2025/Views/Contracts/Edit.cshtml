@@ -18,10 +18,30 @@
                 <select asp-for="ClientID" class="form-control" asp-items="ViewBag.ClientID"></select>
                 <span asp-validation-for="ClientID" class="text-danger"></span>
             </div>
+            <div class="row">
+                <div class="col">
+                    @foreach (InsuranceVariant variant in ViewBag.Insurances)
+                    {
+                        <div class="form-check">
+                            @{
+                                bool isChecked = Model.InsuranceVariants != null && Model.InsuranceVariants.Any(v => v.InsuranceVariantID == variant.InsuranceVariantID);
+                            }
+                            <input type="checkbox" class="form-check-input" id="@variant.InsuranceVariantID" name="variantIds" value="@variant.InsuranceVariantID" 
+                            @(isChecked ? "checked" : "") />
+                            <label class="form-check-label" for="@variant.InsuranceVariantID">@variant.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="IsProblematic" /> @Html.DisplayNameFor(model => model.IsProblematic)
                 </label>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Status, new { @class = "control-label" })
+                @Html.DropDownListFor(model => model.Status, Html.GetEnumSelectList(typeof(ContractStatus)), new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
